@@ -74,19 +74,15 @@ LOAD_ATTRIBUTE:
 	BNE LOAD_ATTRIBUTE
 	
 ;----- Start Menu -----;
-START_MENU:
 	.include "mem-match_startmenu.asm"
 
 ;----- Game Loop -----;
-GAME_LOOP:	
 	.include "mem-match_gameloop.asm"
 	
 ;----- Game Over -----;
-GAME_OVER:	
 	.include "mem-match_gameover.asm"
 	
 ;----- Pause Menu -----;
-PAUSE_MENU:
 	.include "mem-match_pausemenu.asm"
 	
 
@@ -97,7 +93,8 @@ NMI:
 	LDA #$02
 	STA $4014			; Store high byte $(02)00 of RAM address
 
-	INC timer			; Set the flag to allow another module iteration
+	LDA #$01
+	STA timer			; Set timer flag to allow module iteration
 	
 	RTI					; NMI Over, Return
 
