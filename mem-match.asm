@@ -11,39 +11,60 @@
 	.bank 0
 	.org $C000
 RESET:
-	SEI				; Disable IRQ
-	CLD				; Disable decimal
-	LDX #$40
-	STX $4017		; Disable APU IRQ
-	LDX #$FF
-	TXS				; Setup stack
-	INX				; X = 0
-	STX $2000		; Disable NMI
-	STX $2001		; Disable rendering
-	STX $4010		; Disable DMC IRQ
+	sei				; Disable IRQ
+	cld				; Disable decimal
+	ldx #$40
+	stx $4017		; Disable APU IRQ
+	ldx #$FF
+	txs				; Setup stack
+	inx				; X = 0
+	stx $2000		; Disable NMI
+	stx $2001		; Disable rendering
+	stx $4010		; Disable DMC IRQ
 
 VWAIT:
 	BIT $2002
 	BPL VWAIT
 
 CLRMEM:
-	LDA #$00
-	STA $0000, x
-	STA $0100, x
-	STA $0200, x
-	STA $0300, x
-	STA $0400, x
-	STA $0500, x
-	STA $0600, x
-	STA $0700, x
-	LDA #$FE
-	STA $0200, x
-	INX
-	BNE CLRMEM
+	;lda #$00
+	txa ;X is still 0
+	sta $0000, x
+	sta $0100, x
+	sta $0200, x
+	sta $0300, x
+	sta $0400, x
+	sta $0500, x
+	sta $0600, x
+	sta $0700, x
+	lda #$FE
+	sta $0200, x
+	inx
+	bne CLRMEM
 
 VWAIT2:
-	BIT $2002
-	BPL VWAIT2
+	bit $2002
+	bpl VWAIT2
+	
+	
+	lda low(name_table_file)
+	sta name_table
+	lda high(name_table_file)
+	sta name_table + 1
+	jsr LOAD_NAME_TABLE_0
+	
+	lda low(palette_file)
+	sta palette
+	lda high(palette_file)
+	sta palette + 1
+	jsr LOAD_PALETTE_BG
+	
+	lda low(palette_file + $10)
+	sta palette
+	lda high(palette_file + $10)
+	sta palette + 1
+	jsr LOAD_PALETTE_SP
+	
 
 ;----- Start Menu -----;
 	.include "mem-match_startmenu.asm"
@@ -60,21 +81,26 @@ VWAIT2:
 
 ;----- NMI Interrupt -----;
 NMI:
-	LDA #$00
-	STA $2003			; Store low byte $02(00) of RAM address
-	LDA #$02
-	STA $4014			; Store high byte $(02)00 of RAM address
+	lda #$00
+	sta $2003			; Store low byte $02(00) of RAM address
+	lda #$02
+	sta $4014			; Store high byte $(02)00 of RAM address
 
-	LDA #$01
-	STA timer			; Set timer flag to allow module iteration
+	lda #$01
+	sta timer			; Set timer flag to allow module iteration
 
-	RTI					; NMI Over, Return
+	rti					; NMI Over, Return
 
 ;----- Load Sub-Routines -----;
 	.include "mem-match_sr.asm"
 
 ;----- Generic Data -----;
 	.include "mem-match_data.asm"
+	
+;----- Included Files -----;
+name_table_file:	.incbin "mem-match.map"
+attribute_file:	.incbin "mem-match.atr"
+palette_file:	.incbin "mem-match.pal"
 
 ;----- Setup Addresses -----;
 	.org $FFFA
