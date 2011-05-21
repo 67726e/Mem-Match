@@ -2,7 +2,7 @@
 ;;; Start Menu loop/init code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 START_MENU:
-	LDA timer
-	BEQ START_MENU
+	lda timer
+	beq START_MENU
 	
-	JMP START_MENU
+	jmp START_MENU

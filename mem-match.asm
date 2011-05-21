@@ -45,7 +45,7 @@ CLRMEM:
 VWAIT2:
 	bit $2002
 	bpl VWAIT2
-	
+
 	.macro ld_point	;loads a pointer source, destination
 		lda low(\1)
 		sta \2
@@ -55,14 +55,14 @@ VWAIT2:
 
 	ld_point name_table_file, name_table
 	jsr LOAD_NAME_TABLE_0
-	
+
 
 	ld_point palette_file, palette
 	jsr LOAD_PALETTE_BG
-	
+
 	ld_point (palette_file + $10), palette
 	jsr LOAD_PALETTE_SP
-	
+
 
 ;----- Start Menu -----;
 	.include "mem-match_startmenu.asm"
@@ -94,7 +94,7 @@ NMI:
 
 ;----- Generic Data -----;
 	.include "mem-match_data.asm"
-	
+
 ;----- Included Files -----;
 name_table_file:	.incbin "mem-match.map"
 attribute_file:	.incbin "mem-match.atr"

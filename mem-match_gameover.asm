@@ -2,7 +2,7 @@
 ;;; Game over module
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 GAME_OVER:
-	LDA timer
-	BEQ GAME_OVER
+	lda timer
+	beq GAME_OVER
 
-	JMP GAME_OVER
+	jmp GAME_OVER
