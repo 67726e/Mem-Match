@@ -7,6 +7,10 @@
 PALETTE:
 	.db $0F,$30,$0F,$01, $0F,$30,$0F,$01, $0F,$30,$0F,$01, $0F,$30,$0F,$01
 	.db $0F,$30,$0F,$01, $0F,$30,$0F,$01, $0F,$30,$0F,$01, $0F,$30,$0F,$01
-	
-BACKGROUND_START:
+
+START_EASY:
 	.db $0E,$0A,$1C,$22
+START_MEDIUM:
+	.db $16,$0E,$0D,$12,$1E,$16
+START_HARD:
+	.db $11,$0A,$1B,$0D

@@ -5,12 +5,24 @@ START_MENU:
 	lda #$00
 	sta $2000				; Disable NMI & sprites pattern table
 	sta $2001				; Disable background/sprite rendering
-	jsr CLEAR_BACKGROUND
+	jsr CLEAR_BACKGROUND	; Clear all background
 
-	lda #$04
+	lda #$04								; Assign a length of 4 bytes to write
 	sta load_length
-	ld_point $228E, background_write
-	ld_point BACKGROUND_START, background_read
+	ld_point $228E, background_write		; Assign write-to address
+	ld_point START_EASY, background_read	; Read from START_EASY
+	jsr LOAD_BACKGROUND
+
+	lda #$06								; Assign a length of 6 bytes to write
+	sta load_length
+	ld_point $22CE, background_write		; Write 2 lines below above line
+	ld_point START_MEDIUM, background_read	; Read from START_MEDIUM
+	jsr LOAD_BACKGROUND
+
+	lda #$04								; Assign a length of 4 bytes to write
+	sta load_length
+	ld_point $230E, background_write		; Write 2 lines below above line
+	ld_point START_HARD, background_read	; Read from START_HARD
 	jsr LOAD_BACKGROUND
 
 	lda #$00
