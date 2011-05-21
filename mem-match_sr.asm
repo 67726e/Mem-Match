@@ -6,9 +6,9 @@
 LOAD_PALETTE_BG:
 	ldx $2002			; Read the PPU status to reset the latch
 	lda #$3F
-	sta $2006			; Set the low byte $3F(00) of the address
+	sta $2006			; Set the high byte $3F(00) of the address
 	lda #$00
-	sta $2006			; Set the high byte of $(3F)00 of the address
+	sta $2006			; Set the low byte of $(3F)00 of the address
 	jmp LOAD_PALETTE
 
 LOAD_PALETTE_SP:
@@ -19,12 +19,12 @@ LOAD_PALETTE_SP:
 	sta $2006
 
 LOAD_PALETTE:
-	ldx #$00
+	ldy #$00
 LOAD_PALETTE0:
-	lda palette, x
+	lda [palette], y
 	sta $2007
-	inx
-	cpx #$10			;Writes only BG or Sprite (16 each)
+	iny
+	cpy #$10			;Writes only BG or Sprite (16 each)
 	bne LOAD_PALETTE0
 	rts
 
@@ -61,12 +61,12 @@ LOAD_ATTRIBUTE_3:
 	sta $2006
 	
 LOAD_ATTRIBUTE:
-	ldx #$00
+	ldy #$00
 LOAD_ATTRIBUTE0:
-	lda attribute, x
+	lda [attribute], y
 	sta $2007
-	inx
-	cpx #$40
+	iny
+	cpy #$40
 	bne LOAD_ATTRIBUTE0
 	rts
 
@@ -108,7 +108,7 @@ LOAD_NAME_TABLE:
     ldy #$00
     ldx #$04
 LOAD_NAME_TABLE0:
-    lda name_table,y
+    lda [name_table],y
     sta $2007
     iny
     bne LOAD_NAME_TABLE0
