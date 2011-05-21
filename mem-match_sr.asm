@@ -2,6 +2,26 @@
 ;;; SubRoutine module
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;-- Clear Background --;
+CLEAR_BACKGROUND:
+	lda #$20
+	sta $2006				; Write high byte $(20)00 of address
+	lda #$00
+	sta $2006				; Write low byte $20(00) of address
+	lda #$24				; Assign A with the blank tile value
+	ldx #$00				; Clear X
+	ldy #$00				; Clear Y
+CLEAR_BACKGROUND0:
+	sta $2007				; Write blank tile to $2007 (background)
+	inx
+	cpx #$F0				; Compare X with 240
+	bne CLEAR_BACKGROUND0	; If not 240, keep going
+	ldx #$00				; Clear X
+	iny
+	cpy #$04				; Compare Y with 4
+	bne CLEAR_BACKGROUND0	; If not 4, keep going
+	rts
+	
 ;----- Load Palette Data -----;
 LOAD_PALETTE_BG:
 	ldx $2002			; Read the PPU status to reset the latch

@@ -1,11 +1,3 @@
-;----- Macro Definitions -----;
-.macro ld_point	;loads a pointer source, destination
-	lda low(\1)
-	sta \2
-	lda high(\1)
-	sta \2 + 1
-.endm
-
 ;----- Create iNES Header -----;
 	.inesprg 1	; 1x 16KB PRG
 	.ineschr 1	; 1x 8KB CHR
@@ -54,16 +46,32 @@ VWAIT2:
 	bit $2002
 	bpl VWAIT2
 
-	ld_point name_table_file, name_table
-	jsr LOAD_NAME_TABLE_0
-	
+	.macro ld_point	;loads a pointer source, destination
+		lda low(\1)
+		sta \2
+		lda high(\1)
+		sta \2 + 1
+	.endm
 
-	ld_point palette_file, palette
+	JSR CLEAR_BACKGROUND
+	
+;	ld_point name_table_file, name_table
+;	jsr LOAD_NAME_TABLE_0
+
+	ld_point PALETTE, palette
 	jsr LOAD_PALETTE_BG
-	
-	ld_point (palette_file + $10), palette
+
+	ld_point (PALETTE + 10), palette
 	jsr LOAD_PALETTE_SP
-	
+
+	lda #$00
+	sta $2005			; Write 0 to $2005 twice to reset the X/Y
+	sta $2005			; Coordinates to 0, 0
+
+	LDA #%10010000		; Enable NMI, sprites from Pattern Table 0
+	STA $2000
+	LDA #%00011110		; Enable sprites
+	STA $2001
 
 ;----- Start Menu -----;
 	.include "mem-match_startmenu.asm"
@@ -95,11 +103,6 @@ NMI:
 
 ;----- Generic Data -----;
 	.include "mem-match_data.asm"
-	
-;----- Included Files -----;
-name_table_file:	.incbin "mem-match.map"
-attribute_file:	.incbin "mem-match.atr"
-palette_file:	.incbin "mem-match.pal"
 
 ;----- Setup Addresses -----;
 	.org $FFFA
