@@ -20,6 +20,9 @@ CLEAR_BACKGROUND0:
 	iny
 	cpy #$04				; Compare Y with 4
 	bne CLEAR_BACKGROUND0	; If not 4, keep going
+	lda #$00
+	sta $2005				; Write 0 to $2005 twice to reset the X/Y
+	sta $2005				; Coordinates to 0, 0
 	rts
 	
 ;----- Load Palette Data -----;
@@ -79,7 +82,7 @@ LOAD_ATTRIBUTE_3:
 	sta $2006
 	lda #$C0
 	sta $2006
-	
+
 LOAD_ATTRIBUTE:
 	ldy #$00
 LOAD_ATTRIBUTE0:

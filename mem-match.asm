@@ -68,10 +68,10 @@ VWAIT2:
 	sta $2005			; Write 0 to $2005 twice to reset the X/Y
 	sta $2005			; Coordinates to 0, 0
 
-	LDA #%10010000		; Enable NMI, sprites from Pattern Table 0
-	STA $2000
-	LDA #%00011110		; Enable sprites
-	STA $2001
+	lda #%10010000		; Enable NMI, sprites from Pattern Table 0
+	sta $2000
+	lda #%00011110		; Enable sprites
+	sta $2001
 
 ;----- Start Menu -----;
 	.include "mem-match_startmenu.asm"
