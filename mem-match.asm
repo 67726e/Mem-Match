@@ -46,23 +46,21 @@ VWAIT2:
 	bit $2002
 	bpl VWAIT2
 	
-	
-	lda low(name_table_file)
-	sta name_table
-	lda high(name_table_file)
-	sta name_table + 1
+	.macro ld_point	;loads a pointer source, destination
+		lda low(\1)
+		sta \2
+		lda high(\1)
+		sta \2 + 1
+	.endm
+
+	ld_point name_table_file, name_table
 	jsr LOAD_NAME_TABLE_0
 	
-	lda low(palette_file)
-	sta palette
-	lda high(palette_file)
-	sta palette + 1
+
+	ld_point palette_file, palette
 	jsr LOAD_PALETTE_BG
 	
-	lda low(palette_file + $10)
-	sta palette
-	lda high(palette_file + $10)
-	sta palette + 1
+	ld_point (palette_file + $10), palette
 	jsr LOAD_PALETTE_SP
 	
 
