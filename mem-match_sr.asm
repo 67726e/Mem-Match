@@ -2,7 +2,7 @@
 ;;; SubRoutine module
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;-- Clear Background --;
+;----- Clear Background -----;
 CLEAR_BACKGROUND:
 	lda #$20
 	sta $2006				; Write high byte $(20)00 of address
@@ -14,17 +14,35 @@ CLEAR_BACKGROUND:
 CLEAR_BACKGROUND0:
 	sta $2007				; Write blank tile to $2007 (background)
 	inx
-	cpx #$F0				; Compare X with 240
+	cpx #$F8				; Compare X with 248
 	bne CLEAR_BACKGROUND0	; If not 240, keep going
 	ldx #$00				; Clear X
 	iny
-	cpy #$04				; Compare Y with 4
+	cpy #$08				; Compare Y with 8
 	bne CLEAR_BACKGROUND0	; If not 4, keep going
 	lda #$00
 	sta $2005				; Write 0 to $2005 twice to reset the X/Y
 	sta $2005				; Coordinates to 0, 0
 	rts
-	
+
+;----- Load Background x Times -----;
+LOAD_BACKGROUND:
+	lda $2002
+	lda (background_write + 1)
+	sta $2006
+	lda (background_write)
+	sta $2006
+
+	ldy #$00
+	ldx load_length			; Load # of bytes to load
+LOAD_BACKGROUND0:
+	lda [background_read],y
+	sta $2007
+	iny
+	dex
+	bne LOAD_BACKGROUND0
+	rts
+
 ;----- Load Palette Data -----;
 LOAD_PALETTE_BG:
 	ldx $2002			; Read the PPU status to reset the latch
@@ -75,7 +93,7 @@ LOAD_ATTRIBUTE_2:
 	lda #$C0
 	sta $2006
 	jmp LOAD_ATTRIBUTE
-	
+
 LOAD_ATTRIBUTE_3:
 	lda $2002
 	lda #$2F
@@ -94,7 +112,7 @@ LOAD_ATTRIBUTE0:
 	rts
 
 ;----- Load Name Table Data -----;
-	
+
 LOAD_NAME_TABLE_0:
 	lda $2002
 	lda #$20
@@ -110,7 +128,7 @@ LOAD_NAME_TABLE_1:
 	lda #$00
 	sta $2006
 	jmp LOAD_NAME_TABLE
-	
+
 LOAD_NAME_TABLE_2:
 	lda $2002
 	lda #$28
@@ -118,7 +136,7 @@ LOAD_NAME_TABLE_2:
 	lda #$00
 	sta $2006
 	jmp LOAD_NAME_TABLE
-	
+
 LOAD_NAME_TABLE_3:
 	lda $2002
 	lda #$30
@@ -126,10 +144,10 @@ LOAD_NAME_TABLE_3:
 	lda #$00
 	sta $2006
 	jmp LOAD_NAME_TABLE
-	
+
 LOAD_NAME_TABLE:
     ldy #$00
-    ldx #$04
+    ldx load_length
 LOAD_NAME_TABLE0:
     lda [name_table],y
     sta $2007
@@ -139,4 +157,3 @@ LOAD_NAME_TABLE0:
 	dex
 	bne LOAD_NAME_TABLE0
 	rts
-	

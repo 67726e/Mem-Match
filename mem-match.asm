@@ -64,15 +64,6 @@ VWAIT2:
 	ld_point (PALETTE + 10), palette
 	jsr LOAD_PALETTE_SP
 
-	lda #$00
-	sta $2005			; Write 0 to $2005 twice to reset the X/Y
-	sta $2005			; Coordinates to 0, 0
-
-	lda #%10010000		; Enable NMI, sprites from Pattern Table 0
-	sta $2000
-	lda #%00011110		; Enable sprites
-	sta $2001
-
 ;----- Start Menu -----;
 	.include "mem-match_startmenu.asm"
 
