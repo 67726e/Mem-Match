@@ -43,21 +43,18 @@ LOAD_BACKGROUND0:
 	bne LOAD_BACKGROUND0
 	rts
 
-;----- Load x Sprite Segments -----;
+;----- Clear Sprite RAM -----;
 CLEAR_SPRITES:
 	lda $2002
 	lda #$00
 	ldx #$FF
-CLEAR_SRPITES0:
+CLEAR_SPRITES0:
 	sta $2007
 	dex
 	bne CLEAR_SPRITES0
 	rts
-	
-	
-	
-	
-	
+
+
 ;----- Load Palette Data -----;
 LOAD_PALETTE_BG:
 	ldx $2002			; Read the PPU status to reset the latch

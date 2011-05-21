@@ -25,7 +25,7 @@ START_MENU:
 	ld_point $230E, background_write		; Write 2 lines below above line
 	ld_point START_HARD, background_read	; Read from START_HARD
 	jsr LOAD_BACKGROUND
-
+	
 	lda #$00
 	STA $2005				; Set X coordinate to 0
 	STA $2005				; Set Y coordinate to 0
