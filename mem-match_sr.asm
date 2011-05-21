@@ -27,12 +27,6 @@ CLEAR_BACKGROUND0:
 
 ;----- Load Background x Times -----;
 LOAD_BACKGROUND:
-	lda $2002
-	lda (background_write + 1)
-	sta $2006
-	lda (background_write)
-	sta $2006
-
 	ldy #$00
 	ldx load_length			; Load # of bytes to load
 LOAD_BACKGROUND0:
@@ -45,11 +39,10 @@ LOAD_BACKGROUND0:
 
 ;----- Clear Sprite RAM -----;
 CLEAR_SPRITES:
-	lda $2002
 	lda #$00
 	ldx #$FF
 CLEAR_SPRITES0:
-	sta $2007
+	sta $0200, x
 	dex
 	bne CLEAR_SPRITES0
 	rts
@@ -114,12 +107,11 @@ LOAD_ATTRIBUTE_3:
 	sta $2006
 
 LOAD_ATTRIBUTE:
-	ldy #$00
+	ldy #$40
 LOAD_ATTRIBUTE0:
 	lda [attribute], y
 	sta $2007
-	iny
-	cpy #$40
+	dey
 	bne LOAD_ATTRIBUTE0
 	rts
 

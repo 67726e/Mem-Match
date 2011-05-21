@@ -1,3 +1,10 @@
+	.macro ld_point	;loads a pointer source, destination
+		lda #low(\1)
+		sta \2
+		lda #high(\1)
+		sta \2 + 1
+	.endm
+
 ;----- Create iNES Header -----;
 	.inesprg 1	; 1x 16KB PRG
 	.ineschr 1	; 1x 8KB CHR
@@ -10,6 +17,7 @@
 ;----- Startup Code -----;
 	.bank 0
 	.org $C000
+		
 RESET:
 	sei				; Disable IRQ
 	cld				; Disable decimal
@@ -25,10 +33,10 @@ RESET:
 VWAIT:
 	BIT $2002
 	BPL VWAIT
+	
+	txa ;X is still 0
 
 CLRMEM:
-	;lda #$00
-	txa ;X is still 0
 	sta $0000, x
 	sta $0100, x
 	sta $0200, x
@@ -37,23 +45,14 @@ CLRMEM:
 	sta $0500, x
 	sta $0600, x
 	sta $0700, x
-	lda #$FE
-	sta $0200, x
 	inx
 	bne CLRMEM
 
 VWAIT2:
 	bit $2002
 	bpl VWAIT2
-
-	.macro ld_point	;loads a pointer source, destination
-		lda low(\1)
-		sta \2
-		lda high(\1)
-		sta \2 + 1
-	.endm
-
-	JSR CLEAR_BACKGROUND
+	
+	jsr CLEAR_BACKGROUND
 	
 ;	ld_point name_table_file, name_table
 ;	jsr LOAD_NAME_TABLE_0
