@@ -6,6 +6,7 @@ START_MENU:
 	sta $2000				; Disable NMI & sprites pattern table
 	sta $2001				; Disable background/sprite rendering
 	jsr CLEAR_BACKGROUND	; Clear all background
+	jsr CLEAR_SPRITES		; Remove all sprites from screen
 
 	lda #$04								; Assign a length of 4 bytes to write
 	sta load_length
@@ -28,7 +29,7 @@ START_MENU:
 	lda #$00
 	STA $2005				; Set X coordinate to 0
 	STA $2005				; Set Y coordinate to 0
-
+	
 	lda #%10010000			; Enable NMI, sprites from Pattern Table 0
 	sta $2000
 	lda #%00011110			; Enable sprites
