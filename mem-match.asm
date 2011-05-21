@@ -1,3 +1,11 @@
+;----- Macro Definitions -----;
+.macro ld_point	;loads a pointer source, destination
+	lda low(\1)
+	sta \2
+	lda high(\1)
+	sta \2 + 1
+.endm
+
 ;----- Create iNES Header -----;
 	.inesprg 1	; 1x 16KB PRG
 	.ineschr 1	; 1x 8KB CHR
@@ -45,13 +53,6 @@ CLRMEM:
 VWAIT2:
 	bit $2002
 	bpl VWAIT2
-
-	.macro ld_point	;loads a pointer source, destination
-		lda low(\1)
-		sta \2
-		lda high(\1)
-		sta \2 + 1
-	.endm
 
 	ld_point name_table_file, name_table
 	jsr LOAD_NAME_TABLE_0
