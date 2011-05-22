@@ -21,6 +21,11 @@ GAME_LOOP:
 	ld_point GAME_START, background_read	; Read from GAME_START
 	jsr LOAD_BACKGROUND
 	
+	lda #$20
+	sta load_length
+	ld_point GAME_SPRITE_TABLE, sprite_read
+	jsr LOAD_SPRITES
+	
 	lda #$00
 	STA $2005				; Set X coordinate to 0
 	STA $2005				; Set Y coordinate to 0
