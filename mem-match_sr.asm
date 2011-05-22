@@ -138,22 +138,22 @@ LOAD_CARDS:
 	;work out number of times to loop
 	tax				;dec x for count
 	ldy #$00 		;inc y for indexing
-	ld_point name_table, card_table
+	ld_point name_table, $2000
 	ld_2006 $2000
 LOAD_CARDS0:		;start writing to bg
 	lda card_table, y
 	sta $2007
 	lda name_table
 	clc
-	adc #$10		;spacing between cards?
+	adc #$08		;spacing between cards?
 	sta name_table
 	bcc LOAD_CARDS1
 	inc name_table + 1
 LOAD_CARDS1:
 	lda $2002
-	lda name_table
-	sta $2006
 	lda name_table + 1
+	sta $2006
+	lda name_table
 	sta $2006
 	iny
 	dex
