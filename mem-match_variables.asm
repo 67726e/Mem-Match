@@ -10,6 +10,7 @@ load_length 	.rs 1			; Number of bytes to load in a load subroutine
 background_read	.rs 2			; Holds address of the background bytes to be loaded
 background_write .rs 2			; Holds address of the name table location to write to
 sprite_read		.rs 2			; Holds Address of the sprite bytes to be loaded
+game_diff		.rs 1			; Game difficulty
 
 select_pressed	.rs 1			; Button status
 start_pressed	.rs 1

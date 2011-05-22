@@ -89,14 +89,13 @@ START_SELECT:
 	clc
 	adc #$10					; Add 16 to it
 	cmp #$d0					; Check if below final option
-	beq START_SELECT0			; We gotta fix if yes
-	sta $0200					; Otherwise we are good
-	jmp START_START
-START_SELECT0:
+	bne START_SELECT0			; We gotta fix if yes
 	sec
 	sbc #$30					; Subtract 48 otherwise; top of menu
-	sta $0200
+START_SELECT0
+	sta $0200					; Otherwise we are good
 	jmp START_START
+
 START_SELECT_RELEASED:
 	lda #$00					; Set select as released
 	sta select_pressed
@@ -105,6 +104,11 @@ START_START:
 	lda $4016
 	and #$01
 	beq START_UP
+	lda $0200 				; Get menu position
+	sec
+	sbc START_SPRITE_TABLE 	; Subtract starting offset
+	sta game_diff			; Store for game loop to read
+	jmp GAME_LOOP			; Change module
 
 START_UP:
 	lda $4016

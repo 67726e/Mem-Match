@@ -17,3 +17,7 @@ START_HARD:
 START_SPRITE_TABLE:
 	;  Vert Tile# Attr Horiz
 	.db $A0, $00, $00, $60
+	
+GAME_START:
+	.db $1c, $1d, $0a, $1b, $1d
+	
