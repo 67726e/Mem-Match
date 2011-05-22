@@ -47,7 +47,19 @@ CLEAR_SPRITES0:
 	bne CLEAR_SPRITES0
 	rts
 
-
+;----- Load Sprites Into RAM -----;
+LOAD_SPRITES:
+	lda sprite_read
+	ldx load_length
+	ldy #$00
+LOAD_SPRITES0:
+	lda [sprite_read], y
+	sta $0200, y
+	iny
+	dex
+	bne LOAD_SPRITES0
+	rts
+	
 ;----- Load Palette Data -----;
 LOAD_PALETTE_BG:
 	ldx $2002			; Read the PPU status to reset the latch

@@ -1,3 +1,4 @@
+;----- Macros -----;
 	.macro ld_point	;loads a pointer source, destination
 		lda #low(\1)
 		sta \2

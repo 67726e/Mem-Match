@@ -15,5 +15,5 @@ START_MEDIUM:
 START_HARD:
 	.db $11,$0A,$1B,$0D
 START_SPRITE_TABLE:
-	;	Vert  Tile#  Attr  Horiz
-	.db $40, $00, $00, $40
+	;  Vert Tile# Attr Horiz
+	.db $A0, $00, $00, $60
