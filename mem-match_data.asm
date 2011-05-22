@@ -18,16 +18,20 @@ START_SPRITE_TABLE:
 	;  Vert Tile# Attr Horiz
 	.db $A0, $00, $00, $60
 	
+	;Should constants have their own file?
+	h_flip: .equ 6 ;sprite attribute bit positions
+	v_flip: .equ 7
+	
 GAME_START:
 	.db $1c, $1d, $0a, $1b, $1d
 GAME_SPRITE_TABLE:
 	;  Vert Tile# Attr Horiz
 	.db $80, $01, $00, $80
 	.db $80, $02, $00, $88
-	.db $80, $01, $40, $90 ;flip h
+	.db $80, $01, (1<<h_flip), $90
 	.db $88, $03, $00, $80
-	.db $88, $03, $40, $90 ;flip h
-	.db $90, $01, $80, $80 ;flip v
-	.db $90, $02, $80, $88 ;flip v
-	.db $90, $01, $C0, $90 ;flip h&v
+	.db $88, $03, (1<<h_flip), $90
+	.db $90, $01, (1<<v_flip), $80
+	.db $90, $02, (1<<v_flip), $88
+	.db $90, $01, (1<<h_flip)|(1<<v_flip), $90
 	
