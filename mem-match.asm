@@ -1,9 +1,22 @@
 ;----- Macros -----;
-	.macro ld_point	;loads a pointer source, destination
-		lda #low(\1)
-		sta \2
+	.macro ld_point	;loads a destination, pointer source
+		lda #low(\2)
+		sta \1
+		lda #high(\2)
+		sta \1 + 1
+	.endm
+	
+	.macro ld_2006	;puts an address into $2006
+		lda $2002
 		lda #high(\1)
-		sta \2 + 1
+		sta $2006
+		lda #low(\1)
+		sta $2006
+	.endm
+	
+	.macro mov	;destination, source
+		lda \2
+		sta \1
 	.endm
 
 ;----- Create iNES Header -----;
@@ -55,13 +68,13 @@ VWAIT2:
 	
 	jsr CLEAR_BACKGROUND
 	
-;	ld_point name_table_file, name_table
+;	ld_point name_table, name_table_file
 ;	jsr LOAD_NAME_TABLE_0
 
-	ld_point PALETTE, palette
+	ld_point palette, PALETTE 
 	jsr LOAD_PALETTE_BG
 
-	ld_point (PALETTE + 10), palette
+	ld_point palette, (PALETTE + 10)
 	jsr LOAD_PALETTE_SP
 
 ;----- Start Menu -----;

@@ -9,21 +9,14 @@ GAME_LOOP:
 	jsr CLEAR_SPRITES		; Remove all sprites from screen
 
 	; TODO: Initial background/sprite writing
-	
-	lda #$05								; Assign a length of 5 bytes to write
-	sta load_length
-	lda $2002
-	lda #high($228E)
-	sta $2006
-	lda #low($228E)
-	sta $2006
-
-	ld_point GAME_START, background_read	; Read from GAME_START
+		
+	mov load_length, #$05					; Assign a length of 5 bytes to write
+	ld_2006 $228E
+	ld_point background_read, GAME_START 	; Read from GAME_START
 	jsr LOAD_BACKGROUND
 	
-	lda #$20
-	sta load_length
-	ld_point GAME_SPRITE_TABLE, sprite_read
+	mov load_length, #$20
+	ld_point sprite_read, GAME_SPRITE_TABLE
 	jsr LOAD_SPRITES
 	
 	lda #$00

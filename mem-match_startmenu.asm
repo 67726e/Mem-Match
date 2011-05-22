@@ -8,40 +8,23 @@ START_MENU:
 	jsr CLEAR_BACKGROUND	; Clear all background
 	jsr CLEAR_SPRITES		; Remove all sprites from screen
 
-	lda #$04								; Assign a length of 4 bytes to write
-	sta load_length
-	lda $2002
-	lda #high($228E)
-	sta $2006
-	lda #low($228E)
-	sta $2006
-
-	ld_point START_EASY, background_read	; Read from START_EASY
+	mov load_length, #$04					; Assign a length of 4 bytes to write
+	ld_2006 $228E
+	ld_point background_read, START_EASY 	; Read from START_EASY
 	jsr LOAD_BACKGROUND
 
-	lda #$06								; Assign a length of 6 bytes to write
-	sta load_length
-	lda $2002
-	lda #high($22CE)
-	sta $2006
-	lda #low($22CE)
-	sta $2006
-	ld_point START_MEDIUM, background_read	; Read from START_MEDIUM
+	mov load_length, #$06					; Assign a length of 6 bytes to write
+	ld_2006 $22CE
+	ld_point background_read, START_MEDIUM 	; Read from START_MEDIUM
 	jsr LOAD_BACKGROUND
 
-	lda #$04								; Assign a length of 4 bytes to write
-	sta load_length
-	lda $2002
-	lda #high($230E)
-	sta $2006
-	lda #low($230E)
-	sta $2006
-	ld_point START_HARD, background_read	; Read from START_HARD
+	mov load_length, #$04					; Assign a length of 4 bytes to write
+	ld_2006 $230E
+	ld_point background_read, START_HARD 	; Read from START_HARD
 	jsr LOAD_BACKGROUND
 
-	lda #$04
-	sta load_length
-	ld_point START_SPRITE_TABLE, sprite_read
+	mov load_length, #$04
+	ld_point sprite_read, START_SPRITE_TABLE 
 	jsr LOAD_SPRITES
 
 	lda #$00
