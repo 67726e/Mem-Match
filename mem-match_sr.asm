@@ -39,7 +39,7 @@ LOAD_BACKGROUND0:
 
 ;----- Clear Sprite RAM -----;
 CLEAR_SPRITES:
-	lda #$00
+	lda #$FF
 	ldx #$FF
 CLEAR_SPRITES0:
 	sta $0200, x
