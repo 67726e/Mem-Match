@@ -20,3 +20,5 @@ left_pressed	.rs 1
 right_pressed	.rs 1
 up_pressed		.rs 1
 down_pressed	.rs 1
+
+card_table		.rs 16			; Max table size?

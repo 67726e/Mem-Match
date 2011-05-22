@@ -19,6 +19,17 @@ GAME_LOOP:
 	ld_point sprite_read, GAME_SPRITE_TABLE
 	jsr LOAD_SPRITES
 	
+	;set up cards
+	lda #$00
+	ldx #$10
+STORE_CARDS:
+	sta card_table, x
+	dex
+	txa
+	bne STORE_CARDS
+	
+	jsr LOAD_CARDS
+	
 	lda #$00
 	STA $2005				; Set X coordinate to 0
 	STA $2005				; Set Y coordinate to 0
@@ -27,11 +38,12 @@ GAME_LOOP:
 	sta $2000
 	lda #%00011110			; Enable sprites
 	sta $2001
+	
 
+	
 GAME_LOOP0:
 	lda timer
 	beq GAME_LOOP0
-	lda #$00
-	sta timer
+	dec timer	;only ever set to 1, so this resets
 
 	jmp GAME_LOOP0

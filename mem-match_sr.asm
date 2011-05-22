@@ -4,10 +4,7 @@
 
 ;----- Clear Background -----;
 CLEAR_BACKGROUND:
-	lda #$20
-	sta $2006				; Write high byte $(20)00 of address
-	lda #$00
-	sta $2006				; Write low byte $20(00) of address
+	ld_2006 $2000
 	lda #$24				; Assign A with the blank tile value
 	ldx #$00				; Clear X
 	ldy #$00				; Clear Y
@@ -62,19 +59,11 @@ LOAD_SPRITES0:
 	
 ;----- Load Palette Data -----;
 LOAD_PALETTE_BG:
-	ldx $2002			; Read the PPU status to reset the latch
-	lda #$3F
-	sta $2006			; Set the high byte $3F(00) of the address
-	lda #$00
-	sta $2006			; Set the low byte of $(3F)00 of the address
+	ld_2006 $3f00
 	jmp LOAD_PALETTE
 
 LOAD_PALETTE_SP:
-	ldx $2002
-	lda #$3F
-	sta $2006
-	lda #$10
-	sta $2006
+	ld_2006 $3f10
 
 LOAD_PALETTE:
 	ldy #$00
@@ -88,35 +77,19 @@ LOAD_PALETTE0:
 
 ;----- Load Attribute Data -----;
 LOAD_ATTRIBUTE_0:
-	lda $2002			; Read PPU status to reset the latch
-	lda #$23
-	sta $2006			; Write high byte $(23)C0 of address
-	lda #$C0
-	sta $2006			; Write low byte $23(C0) of address
+	ld_2006 $23c0
 	jmp LOAD_ATTRIBUTE
 
 LOAD_ATTRIBUTE_1:
-	lda $2002
-	lda #$27
-	sta $2006
-	lda #$C0
-	sta $2006
+	ld_2006 $27c0
 	jmp LOAD_ATTRIBUTE
 
 LOAD_ATTRIBUTE_2:
-	lda $2002
-	lda #$2B
-	sta $2006
-	lda #$C0
-	sta $2006
+	ld_2006 $2bc0
 	jmp LOAD_ATTRIBUTE
 
 LOAD_ATTRIBUTE_3:
-	lda $2002
-	lda #$2F
-	sta $2006
-	lda #$C0
-	sta $2006
+	ld_2006 $2fc0
 
 LOAD_ATTRIBUTE:
 	ldy #$40
@@ -130,35 +103,19 @@ LOAD_ATTRIBUTE0:
 ;----- Load Name Table Data -----;
 
 LOAD_NAME_TABLE_0:
-	lda $2002
-	lda #$20
-	sta $2006
-	lda #$00
-	sta $2006
+	ld_2006 $2000
 	jmp LOAD_NAME_TABLE
 
 LOAD_NAME_TABLE_1:
-	lda $2002
-	lda #$24
-	sta $2006
-	lda #$00
-	sta $2006
+	ld_2006 $2400
 	jmp LOAD_NAME_TABLE
 
 LOAD_NAME_TABLE_2:
-	lda $2002
-	lda #$28
-	sta $2006
-	lda #$00
-	sta $2006
+	ld_2006 $2800
 	jmp LOAD_NAME_TABLE
 
 LOAD_NAME_TABLE_3:
-	lda $2002
-	lda #$30
-	sta $2006
-	lda #$00
-	sta $2006
+	ld_2006 $3000
 	jmp LOAD_NAME_TABLE
 
 LOAD_NAME_TABLE:
@@ -173,3 +130,33 @@ LOAD_NAME_TABLE0:
 	dex
 	bne LOAD_NAME_TABLE0
 	rts
+
+;----- Load Cards -----;
+
+LOAD_CARDS:
+	lda game_diff 	;load table size
+	;work out number of times to loop
+	tax				;dec x for count
+	ldy #$00 		;inc y for indexing
+	ld_point name_table, card_table
+	ld_2006 $2000
+LOAD_CARDS0:		;start writing to bg
+	lda card_table, y
+	sta $2007
+	lda name_table
+	clc
+	adc #$10		;spacing between cards?
+	sta name_table
+	bcc LOAD_CARDS1
+	inc name_table + 1
+LOAD_CARDS1:
+	lda $2002
+	lda name_table
+	sta $2006
+	lda name_table + 1
+	sta $2006
+	iny
+	dex
+	bne LOAD_CARDS0
+	rts
+	

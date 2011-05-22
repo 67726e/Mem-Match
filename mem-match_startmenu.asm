@@ -40,8 +40,7 @@ START_MENU:
 START_MENU_WAIT:
 	lda timer
 	beq START_MENU_WAIT
-	lda #$00
-	sta timer
+	dec timer	;only ever set to 1, so this resets
 
 	;----- Read Controllers -----;
 	lda #$01
