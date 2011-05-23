@@ -22,5 +22,6 @@ PAUSE_MENU:
 PAUSE_MENU0:
 	lda timer
 	beq PAUSE_MENU0
+	dec timer	;only ever set to 1, so this resets
 
 	jmp PAUSE_MENU0

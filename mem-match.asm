@@ -92,9 +92,9 @@ VWAIT2:
 
 ;----- NMI Interrupt -----;
 NMI:
-	lda #$00
+	lda #low(DMA)
 	sta $2003			; Store low byte $02(00) of RAM address
-	lda #$02
+	lda #high(DMA)
 	sta $4014			; Store high byte $(02)00 of RAM address
 
 	lda #$01

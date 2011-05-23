@@ -67,15 +67,15 @@ START_SELECT:
 	inx
 	stx select_pressed			; Otherwise set select_pressed to 1 (pressed)
 	
-	lda $0200					; Get the "selector" Y
+	lda DMA					; Get the "selector" Y
 	clc
 	adc #$10					; Add 16 to it
 	cmp #$d0					; Check if below final option
 	bne START_SELECT0			; We gotta fix if yes
 	sec
 	sbc #$30					; Subtract 48 otherwise; top of menu
-START_SELECT0
-	sta $0200					; Otherwise we are good
+START_SELECT0:
+	sta DMA					; Otherwise we are good
 	jmp START_START
 
 START_SELECT_RELEASED:
@@ -86,7 +86,7 @@ START_START:
 	lda $4016
 	and #$01
 	beq START_UP
-	lda $0200 				; Get menu position
+	lda DMA 				; Get menu position
 	sec
 	sbc START_SPRITE_TABLE 	; Subtract starting offset
 	sta game_diff			; Store for game loop to read

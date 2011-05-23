@@ -22,8 +22,10 @@ START_SPRITE_TABLE:
 	h_flip: .equ 6 ;sprite attribute bit positions
 	v_flip: .equ 7
 	
-GAME_START:
-	.db $1c, $1d, $0a, $1b, $1d
+	DMA:	.equ $0200	; Sprite DMA page
+	
+GAME_TEST:
+	.db $1c, $1d, $0a, $1b, $1d ;START
 GAME_SPRITE_TABLE:
 	;  Vert Tile# Attr Horiz
 	.db $80, $01, $00, $80

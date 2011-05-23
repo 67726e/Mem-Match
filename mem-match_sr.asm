@@ -39,7 +39,7 @@ CLEAR_SPRITES:
 	lda #$FF
 	ldx #$FF
 CLEAR_SPRITES0:
-	sta $0200, x
+	sta DMA, x
 	dex
 	bne CLEAR_SPRITES0
 	rts
@@ -51,7 +51,7 @@ LOAD_SPRITES:
 	ldy #$00
 LOAD_SPRITES0:
 	lda [sprite_read], y
-	sta $0200, y
+	sta DMA, y
 	iny
 	dex
 	bne LOAD_SPRITES0
@@ -159,4 +159,33 @@ LOAD_CARDS1:
 	dex
 	bne LOAD_CARDS0
 	rts
+	
+;----- Move Selector -----;
+MOVE_SELECTOR:
+	lda DMA
+	sta DMA + 4
+	sta DMA + 8
+	clc
+	adc #$08
+	sta DMA + 12
+	sta DMA + 16
+	clc
+	adc #$08
+	sta DMA + 20
+	sta DMA + 24
+	sta DMA + 28
+	
+	lda DMA + 3
+	sta DMA + 15
+	sta DMA + 23
+	clc
+	adc #$08
+	sta DMA + 7
+	sta DMA + 27
+	clc
+	adc #$08
+	sta DMA + 11
+	sta DMA + 19
+	sta DMA + 31
+	rts 
 	
