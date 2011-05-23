@@ -42,9 +42,7 @@ STORE_CARDS:
 
 	
 GAME_LOOP_WAIT:
-	lda timer
-	beq GAME_LOOP_WAIT
-	dec timer	;only ever set to 1, so this resets
+	jsr WAIT_VBLANK
 	;----- Read Controllers -----;
 	lda #$01
 	sta $4016
@@ -79,26 +77,62 @@ GAME_UP:
 	lda $4016
 	and #$01
 	beq GAME_DOWN
-	dec DMA
-	jsr MOVE_SELECTOR
+	lda #$00
+	sta selector_move_x
+	lda #-1
+	sta selector_move_y
+	lda #$20
+	sta selector_count
+	jmp ANIMATION_LOOP
 GAME_DOWN:
 	lda $4016
 	and #$01
 	beq GAME_LEFT
-	inc DMA
-	jsr MOVE_SELECTOR
+	lda #$00
+	sta selector_move_x
+	lda #$01
+	sta selector_move_y
+	lda #$20
+	sta selector_count
+	jmp ANIMATION_LOOP
 GAME_LEFT:
 	lda $4016
 	and #$01
 	beq GAME_RIGHT
-	dec DMA + 3
-	jsr MOVE_SELECTOR
+	lda #-1
+	sta selector_move_x
+	lda #$00
+	sta selector_move_y
+	lda #$20
+	sta selector_count
+	jmp ANIMATION_LOOP
 GAME_RIGHT:
 	lda $4016
 	and #$01
 	beq GAME_CONTROL_END
-	inc DMA + 3
-	jsr MOVE_SELECTOR
+	lda #$01
+	sta selector_move_x
+	lda #$00
+	sta selector_move_y
+	lda #$20
+	sta selector_count
+	jmp ANIMATION_LOOP
 GAME_CONTROL_END:
 
+	jmp GAME_LOOP_WAIT
+	
+ANIMATION_LOOP:
+	jsr WAIT_VBLANK
+	
+	lda DMA
+	clc
+	adc selector_move_y
+	sta DMA
+	lda DMA + 3
+	clc
+	adc selector_move_x
+	sta DMA + 3
+	jsr MOVE_SELECTOR
+	dec selector_count
+	bne ANIMATION_LOOP
 	jmp GAME_LOOP_WAIT

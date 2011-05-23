@@ -189,3 +189,9 @@ MOVE_SELECTOR:
 	sta DMA + 31
 	rts 
 	
+WAIT_VBLANK:
+	lda timer
+	beq WAIT_VBLANK
+	dec timer	;only ever set to 1, so this resets
+	rts
+	

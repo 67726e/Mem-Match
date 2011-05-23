@@ -38,9 +38,7 @@ START_MENU:
 
 	;----- Pause Menu Module -----;
 START_MENU_WAIT:
-	lda timer
-	beq START_MENU_WAIT
-	dec timer	;only ever set to 1, so this resets
+	jsr WAIT_VBLANK
 
 	;----- Read Controllers -----;
 	lda #$01
