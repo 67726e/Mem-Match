@@ -20,15 +20,12 @@ GAME_LOOP:
 	jsr LOAD_SPRITES
 	
 	;set up cards
-	lda #$00
-	ldx #$10
-STORE_CARDS:
-	sta card_table, x
-	dex
-	txa
-	bne STORE_CARDS
-	
-	jsr LOAD_CARDS
+	ld_point name_table, $2020
+	jsr LOAD_CARD
+	ld_point name_table, $2024
+	jsr LOAD_CARD
+	ld_point name_table, $2028
+	jsr LOAD_CARD
 	
 	lda #$00
 	STA $2005				; Set X coordinate to 0
@@ -121,10 +118,10 @@ GAME_CONTROL_END:
 
 	jmp GAME_LOOP_WAIT
 	
-ANIMATION_LOOP:
+ANIMATION_LOOP:			;this locks out the controls and animates
 	jsr WAIT_VBLANK
 	
-	lda DMA
+	lda DMA				;move the top left sprite
 	clc
 	adc selector_move_y
 	sta DMA
@@ -132,7 +129,7 @@ ANIMATION_LOOP:
 	clc
 	adc selector_move_x
 	sta DMA + 3
-	jsr MOVE_SELECTOR
+	jsr MOVE_SELECTOR	;update the entite selector
 	dec selector_count
 	bne ANIMATION_LOOP
 	jmp GAME_LOOP_WAIT

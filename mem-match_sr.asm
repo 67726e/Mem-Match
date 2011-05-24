@@ -130,35 +130,48 @@ LOAD_NAME_TABLE0:
 	dex
 	bne LOAD_NAME_TABLE0
 	rts
-
-;----- Load Cards -----;
-
-LOAD_CARDS:
-	lda game_diff 	;load table size
-	;work out number of times to loop
-	tax				;dec x for count
-	ldy #$00 		;inc y for indexing
-	ld_point name_table, $2000
-	ld_2006 $2000
-LOAD_CARDS0:		;start writing to bg
-	lda card_table, y
-	sta $2007
-	lda name_table
-	clc
-	adc #$08		;spacing between cards?
-	sta name_table
-	bcc LOAD_CARDS1
-	inc name_table + 1
-LOAD_CARDS1:
+	
+;----- Load Card -----;
+LOAD_CARD:
+	;ld_point name_table, $2021
+	ldx #$00
+	ldy #$04 		;tabel width for indexing
+LOAD_CARD0:		;start writing to bg
 	lda $2002
 	lda name_table + 1
 	sta $2006
 	lda name_table
 	sta $2006
-	iny
-	dex
-	bne LOAD_CARDS0
+	
+	lda name_table
+	clc
+	adc #$01
+	sta name_table
+	lda name_table + 1
+	adc #$00
+	sta name_table + 1
+	
+	txa
+	clc
+	adc #$30	;card sprite offset
+	sta $2007
+	inx
+	dey
+	cpy #02
+	bne LOAD_CARD1
+	;move to next line
+	lda name_table
+	clc
+	adc #$1e
+	sta name_table
+	lda name_table + 1
+	adc #$00
+	sta name_table + 1
+LOAD_CARD1:
+	cpy #0
+	bne LOAD_CARD0
 	rts
+	
 	
 ;----- Move Selector -----;
 MOVE_SELECTOR:

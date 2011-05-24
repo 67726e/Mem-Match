@@ -11,6 +11,7 @@ background_read	.rs 2			; Holds address of the background bytes to be loaded
 background_write .rs 2			; Holds address of the name table location to write to
 sprite_read		.rs 2			; Holds Address of the sprite bytes to be loaded
 game_diff		.rs 1			; Game difficulty
+gen_pointer		.rs 2			; General pointer holder
 
 select_pressed	.rs 1			; Button status
 start_pressed	.rs 1
