@@ -19,24 +19,69 @@ GAME_LOOP:
 	ld_point sprite_read, GAME_SPRITE_TABLE
 	jsr LOAD_SPRITES
 	
-	;set up cards
-	ld_point name_table, $2020
+	lda #$83
+	sta DMA
+	lda #$84
+	sta DMA + 3
+	jsr MOVE_SELECTOR
+
+	
+;SET_CARD_VALUES:	
+
+	ldx CARD_NUMBER
+CARD_LOADER:
+	lda #low($2021)
+	sta name_table
+	lda #high($2021)
+	sta name_table + 1
+	
+	lda CARD_POS1 - 1, x
+	lsr	A				;div 8 for row#
+	lsr A
+	lsr A
+	tay
+	iny
+CARD_LOADER0:
+	dey
+	beq CARD_LOADER1
+	clc
+	lda name_table
+	adc #$60			;row
+	sta name_table
+	lda name_table + 1
+	adc #$00
+	sta name_table + 1
+
+	jmp CARD_LOADER0
+CARD_LOADER1:
+	
+	lda CARD_POS1 - 1, x
+	asl A 				;multiply by 4
+	asl A
+	;clc ;vals are smaller than 64, so asl clears carry
+	adc name_table
+	sta name_table
+	lda #$00
+	adc name_table + 1	;store carry
+	sta name_table + 1
+	
+	txa ;push x
+	pha
 	jsr LOAD_CARD
-	ld_point name_table, $2024
-	jsr LOAD_CARD
-	ld_point name_table, $2028
-	jsr LOAD_CARD
+	pla
+	tax
+	dex
+	bne CARD_LOADER
 	
 	lda #$00
-	STA $2005				; Set X coordinate to 0
-	STA $2005				; Set Y coordinate to 0
-	
-	lda #%10010000			; Enable NMI, sprites from Pattern Table 0
-	sta $2000
+	sta $2005				; Set X coordinate to 0
+	sta $2005				; Set Y coordinate to 0
+
+	; fceuxd wants $2001 written first, don't know why
 	lda #%00011110			; Enable sprites
 	sta $2001
-	
-
+	lda #%10010000			; Enable NMI, sprites from Pattern Table 0
+	sta $2000
 	
 GAME_LOOP_WAIT:
 	jsr WAIT_VBLANK
@@ -76,9 +121,9 @@ GAME_UP:
 	beq GAME_DOWN
 	lda #$00
 	sta selector_move_x
-	lda #-1
+	lda #-2
 	sta selector_move_y
-	lda #$20
+	lda #$10
 	sta selector_count
 	jmp ANIMATION_LOOP
 GAME_DOWN:
@@ -87,31 +132,31 @@ GAME_DOWN:
 	beq GAME_LEFT
 	lda #$00
 	sta selector_move_x
-	lda #$01
+	lda #$02
 	sta selector_move_y
-	lda #$20
+	lda #$10
 	sta selector_count
 	jmp ANIMATION_LOOP
 GAME_LEFT:
 	lda $4016
 	and #$01
 	beq GAME_RIGHT
-	lda #-1
+	lda #-2
 	sta selector_move_x
 	lda #$00
 	sta selector_move_y
-	lda #$20
+	lda #$10
 	sta selector_count
 	jmp ANIMATION_LOOP
 GAME_RIGHT:
 	lda $4016
 	and #$01
 	beq GAME_CONTROL_END
-	lda #$01
+	lda #$02
 	sta selector_move_x
 	lda #$00
 	sta selector_move_y
-	lda #$20
+	lda #$10
 	sta selector_count
 	jmp ANIMATION_LOOP
 GAME_CONTROL_END:

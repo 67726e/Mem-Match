@@ -74,7 +74,7 @@ VWAIT2:
 	ld_point palette, PALETTE 
 	jsr LOAD_PALETTE_BG
 
-	ld_point palette, (PALETTE + 10)
+	ld_point palette, (PALETTE + 16)
 	jsr LOAD_PALETTE_SP
 
 ;----- Start Menu -----;

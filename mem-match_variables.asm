@@ -26,4 +26,4 @@ selector_move_x	.rs 1			; How fast to move in a give direction
 selector_move_y	.rs 1			; Two's complement for left and up
 selector_count	.rs 1			; Number of times to move
 
-card_table		.rs 16			; Max table size?
+card_table		.rs 8*8			; Max table size?
