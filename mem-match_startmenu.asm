@@ -36,10 +36,14 @@ START_MENU:
 	lda #%00011110			; Enable sprites
 	sta $2001
 
+	jsr RAND_ROL_INIT ;start generating random numbers for the cards
+	
 	;----- Pause Menu Module -----;
 START_MENU_WAIT:
 	jsr WAIT_VBLANK
 
+	jsr RAND_ROL0 ;generate a new random number for the cards
+	
 	;----- Read Controllers -----;
 	lda #$01
 	sta $4016

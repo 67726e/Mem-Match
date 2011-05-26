@@ -201,7 +201,26 @@ MOVE_SELECTOR:
 	sta DMA + 19
 	sta DMA + 31
 	rts 
+
+;----- Random Number Generator -----;
+RAND_ROL_INIT:
+	lda #$40 ;#%01000000
+	sta mask
+	lda #$01
+	sta rand_gen_l
 	
+RAND_ROL0:
+	lda rand_gen_h
+	asl rand_gen_l
+	rol rand_gen_h
+	eor rand_gen_l
+	bit mask
+	beq RAND_ROL1
+	inc rand_gen_l ;asl clears last bit, inc sets to 1
+RAND_ROL1:
+	rts
+
+;----- Wait for Vblank -----;
 WAIT_VBLANK:
 	lda timer
 	beq WAIT_VBLANK

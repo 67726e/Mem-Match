@@ -25,24 +25,48 @@ GAME_LOOP:
 	sta DMA + 3
 	jsr MOVE_SELECTOR
 
-	
-;SET_CARD_VALUES:	
-
+	;load cards
 	ldx CARD_NUMBER
 CARD_LOADER:
+	lda #$01
+	sta $4016
+	lda #$00
+	sta $4016
+	lda $4016
+	lda $4016
+	lda $4016
+	lda $4016
+	and #$01
+	beq CARD_LOADER_START
+	jsr RAND_ROL0
+CARD_LOADER_START:	
 	lda #low($2021)
 	sta name_table
 	lda #high($2021)
 	sta name_table + 1
 	
-	lda CARD_POS1 - 1, x
+	;lda CARD_POS1 - 1, x
+	jsr RAND_ROL0
+	lda rand_gen_h
+	asl A
+	eor rand_gen_l
+	lsr A
+	;cmp #56
+	;cmp #0
+	;bcc CARD_LOADER
+tester:
+	cmp #56
+	bcc CARD_LOADER_TEST
+	sec
+	sbc #21
+	jmp tester
+CARD_LOADER_TEST:
+	pha
 	lsr	A				;div 8 for row#
 	lsr A
 	lsr A
 	tay
-	iny
 CARD_LOADER0:
-	dey
 	beq CARD_LOADER1
 	clc
 	lda name_table
@@ -51,11 +75,18 @@ CARD_LOADER0:
 	lda name_table + 1
 	adc #$00
 	sta name_table + 1
-
+	dey
 	jmp CARD_LOADER0
 CARD_LOADER1:
 	
-	lda CARD_POS1 - 1, x
+	;lda CARD_POS1 - 1, x
+
+	;lda rand_gen_h
+	;asl A
+	;eor rand_gen_l
+	;lsr A
+	pla
+	
 	asl A 				;multiply by 4
 	asl A
 	;clc ;vals are smaller than 64, so asl clears carry
@@ -72,7 +103,8 @@ CARD_LOADER1:
 	tax
 	dex
 	bne CARD_LOADER
-	
+;-------------------------------------------------------
+
 	lda #$00
 	sta $2005				; Set X coordinate to 0
 	sta $2005				; Set Y coordinate to 0
