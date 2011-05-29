@@ -32,3 +32,6 @@ card_table		.rs 8 * 7		; Max table size = 8*7
 mask			.rs 1			; bit mask for LFSR
 rand_gen_l		.rs 1
 rand_gen_h		.rs 1
+
+;should functions have a file?
+SPRITE .func DMA +((\1) *4)		; Take a sprite number, returns address

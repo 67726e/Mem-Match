@@ -137,14 +137,15 @@ GAME_A:
 	lda $4016
 	and #$01
 	beq GAME_B
-	lda DMA+3			;get x coord
+	;lda DMA+3			;get x coord
+	lda SPRITE(1)+3		;get x coord
 	lsr A				;turn them into table values
 	lsr A
 	lsr A
 	lsr A
 	lsr A
 	sta temp
-	lda DMA				;get y coord
+	lda SPRITE(1)		;get y coord
 
 	lsr A
 	lsr A
@@ -152,9 +153,17 @@ GAME_A:
 	adc temp
 	tax
 	lda card_table, x	;grab the number from the table
+	beq GAME_B
 	clc
 	adc #$10
-	sta DMA+1			;show a sprite
+	;sta DMA+1			;show a sprite
+	sta SPRITE(8)+1			;show a sprite
+	lda SPRITE(1)+3
+	sta SPRITE(8)+3
+	lda SPRITE(3)
+	sta SPRITE(8)
+	lda #$00
+	sta SPRITE(8)+2
 	
 	
 	
