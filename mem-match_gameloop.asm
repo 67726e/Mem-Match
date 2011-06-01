@@ -26,7 +26,11 @@ GAME_LOOP:
 	jsr MOVE_SELECTOR
 
 	;load cards
-	ldx CARD_NUMBER
+	lda game_diff
+	clc
+	adc #$10
+	tax
+	;ldx CARD_NUMBER
 CARD_LOADER:
 	lda #$01
 	sta $4016
@@ -37,33 +41,29 @@ CARD_LOADER:
 	lda $4016
 	lda $4016
 	and #$01
-	beq CARD_LOADER_START
-	jsr RAND_ROL0
-CARD_LOADER_START:	
-	lda #low($2021)
+	beq CARD_LOADER0	;for a little more variance-
+	jsr RAND_ROL0		;shift when start is held
+CARD_LOADER0:	
+	lda #low($2021)		;load pointer
 	sta name_table
 	lda #high($2021)
 	sta name_table + 1
 	
-	;lda CARD_POS1 - 1, x
 	jsr RAND_ROL0
-	lda rand_gen_h
+	lda rand_gen_h		;combine low and high values
 	asl A
 	eor rand_gen_l
 	lsr A
-	;cmp #56
-	;cmp #0
-	;bcc CARD_LOADER
-tester:
-	cmp #56
-	bcc CARD_LOADER_TEST
+CARD_LOADER1:
+	cmp #56				;make sure our number is a valid-
+	bcc CARD_LOADER2	;card position
 	sec
 	sbc #55
-	jmp tester
-CARD_LOADER_TEST:
-	pha
+	jmp CARD_LOADER1
+CARD_LOADER2:
+	pha					;push our card#
 	
-	sta temp	;swap x and a
+	sta temp			;swap x and a
 	txa
 	ldx temp
 	sta card_table, x
@@ -74,8 +74,8 @@ CARD_LOADER_TEST:
 	lsr A
 	lsr A
 	tay
-CARD_LOADER0:
-	beq CARD_LOADER1
+CARD_LOADER3:
+	beq CARD_LOADER4	;setup screen position
 	clc
 	lda name_table
 	adc #$60			;row
@@ -84,27 +84,21 @@ CARD_LOADER0:
 	adc #$00
 	sta name_table + 1
 	dey
-	jmp CARD_LOADER0
-CARD_LOADER1:
+	jmp CARD_LOADER3
+CARD_LOADER4:
 	
-	;lda CARD_POS1 - 1, x
-
-	;lda rand_gen_h
-	;asl A
-	;eor rand_gen_l
-	;lsr A
-	pla
+	pla					;pop our card#
 	
 	asl A 				;multiply by 4
 	asl A
-	;clc ;vals are smaller than 64, so asl clears carry
+	;vals are smaller than 64, so asl clears carry
 	adc name_table
 	sta name_table
 	lda #$00
 	adc name_table + 1	;store carry
 	sta name_table + 1
 	
-	txa ;push x
+	txa 				;push x so load card doesn't overwrite
 	pha
 	jsr LOAD_CARD
 	pla
