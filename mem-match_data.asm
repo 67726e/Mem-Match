@@ -23,19 +23,17 @@ START_SPRITE_TABLE:
 	v_flip: .equ 7
 	
 	DMA:	.equ $0200	; Sprite DMA page
-	
-GAME_TEST:
-	.db $1c, $1d, $0a, $1b, $1d ;START
+
 GAME_SPRITE_TABLE:
 	;  Vert Tile# Attr Horiz
-	.db $80, $01, $00, $80
-	.db $80, $02, $00, $88
-	.db $80, $01, (1<<h_flip), $90
-	.db $88, $03, $00, $80
-	.db $88, $03, (1<<h_flip), $90
-	.db $90, $01, (1<<v_flip), $80
-	.db $90, $02, (1<<v_flip), $88
-	.db $90, $01, (1<<h_flip)|(1<<v_flip), $90
+	.db $08, $01, $00, $04
+	.db $08, $02, $00, $0c
+	.db $08, $01, (1<<h_flip), $14
+	.db $10, $03, $00, $04
+	.db $10, $03, (1<<h_flip), $14
+	.db $18, $01, (1<<v_flip), $04
+	.db $18, $02, (1<<v_flip), $0c
+	.db $18, $01, (1<<h_flip)|(1<<v_flip), $14
 	
 CARD_POS1:
 	.db  0,  1,  2,  3,  4,  5,  6,  7

@@ -12,6 +12,9 @@ background_read	.rs 2			; Holds address of the background bytes to be loaded
 background_write .rs 2			; Holds address of the name table location to write to
 sprite_read		.rs 2			; Holds Address of the sprite bytes to be loaded
 game_diff		.rs 1			; Game difficulty
+								; 1 - Easy
+								; 2 - Medium
+								; 3 - Hard
 gen_pointer		.rs 2			; General pointer holder
 
 select_pressed	.rs 1			; Button status
@@ -32,6 +35,9 @@ card_table		.rs 8 * 7		; Max table size = 8*7
 mask			.rs 1			; bit mask for LFSR
 rand_gen_l		.rs 1
 rand_gen_h		.rs 1
+
+grid_height		.rs 1			; Number of rows of cards based on difficulty
+grid_y			.rs 1			; Number of current row that the selector is on
 
 ;should functions have a file?
 SPRITE .func DMA +((\1) *4)		; Take a sprite number, returns address

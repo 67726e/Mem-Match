@@ -76,8 +76,15 @@ START_SELECT:
 	bne START_SELECT0			; We gotta fix if yes
 	sec
 	sbc #$30					; Subtract 48 otherwise; top of menu
-START_SELECT0:
-	sta DMA					; Otherwise we are good
+START_SELECT0
+	ldx game_diff				; Get current difficulty
+	inx
+	cpx #$04
+	bne START_SELECT1
+	ldx #$01
+START_SELECT1:
+	stx game_diff				; Store the game difficulty
+	sta DMA						; Otherwise we are good
 	jmp START_START
 
 START_SELECT_RELEASED:

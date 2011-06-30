@@ -9,105 +9,16 @@ GAME_LOOP:
 	jsr CLEAR_SPRITES		; Remove all sprites from screen
 
 	; TODO: Initial background/sprite writing
-		
-	mov load_length, #$05					; Assign a length of 5 bytes to write
-	ld_2006 $228E
-	ld_point background_read, GAME_TEST
-	jsr LOAD_BACKGROUND
+
+	lda #$01
+	sta grid_y				; Set off the grid y position at 1
+	
+	lda #$05
+	sta grid_height			; Store the # of rows used for the match
 	
 	mov load_length, #$20
 	ld_point sprite_read, GAME_SPRITE_TABLE
 	jsr LOAD_SPRITES
-	
-	lda #$83
-	sta DMA
-	lda #$84
-	sta DMA + 3
-	jsr MOVE_SELECTOR
-
-	;load cards
-	lda game_diff
-	clc
-	adc #$10
-	tax
-	;ldx CARD_NUMBER
-CARD_LOADER:
-	lda #$01
-	sta $4016
-	lda #$00
-	sta $4016
-	lda $4016
-	lda $4016
-	lda $4016
-	lda $4016
-	and #$01
-	beq CARD_LOADER0	;for a little more variance-
-	jsr RAND_ROL0		;shift when start is held
-CARD_LOADER0:	
-	lda #low($2021)		;load pointer
-	sta name_table
-	lda #high($2021)
-	sta name_table + 1
-	
-	jsr RAND_ROL0
-	lda rand_gen_h		;combine low and high values
-	asl A
-	eor rand_gen_l
-	lsr A
-CARD_LOADER1:
-	cmp #56				;make sure our number is a valid-
-	bcc CARD_LOADER2	;card position
-	sec
-	sbc #55
-	jmp CARD_LOADER1
-CARD_LOADER2:
-	pha					;push our card#
-	
-	sta temp			;swap x and a
-	txa
-	ldx temp
-	sta card_table, x
-	tax
-	lda temp
-
-	lsr	A				;div 8 for row#
-	lsr A
-	lsr A
-	tay
-CARD_LOADER3:
-	beq CARD_LOADER4	;setup screen position
-	clc
-	lda name_table
-	adc #$60			;row
-	sta name_table
-	lda name_table + 1
-	adc #$00
-	sta name_table + 1
-	dey
-	jmp CARD_LOADER3
-CARD_LOADER4:
-	
-	pla					;pop our card#
-	
-	asl A 				;multiply by 4
-	asl A
-	;vals are smaller than 64, so asl clears carry
-	adc name_table
-	sta name_table
-	lda #$00
-	adc name_table + 1	;store carry
-	sta name_table + 1
-	
-	txa 				;push x so load card doesn't overwrite
-	pha
-	jsr LOAD_CARD
-	pla
-	tax
-	dex
-	beq CARD_LOADER_DONE
-	jmp CARD_LOADER
-CARD_LOADER_DONE:
-;-------------------------------------------------------
 
 	lda #$00
 	sta $2005				; Set X coordinate to 0
@@ -185,6 +96,12 @@ GAME_UP:
 	lda $4016
 	and #$01
 	beq GAME_DOWN
+	
+	lda grid_y				; Get the current Y coordinate
+	cmp #$01				; If 1, at the top, can't go further
+	beq GAME_DOWN
+	dec grid_y				; Otherwise we can go up, decrement the counter
+
 	lda #$00
 	sta selector_move_x
 	lda #-2
@@ -196,6 +113,12 @@ GAME_DOWN:
 	lda $4016
 	and #$01
 	beq GAME_LEFT
+	
+	lda grid_y				; Get current Y cooridnate
+	cmp grid_height			; Compare to the grid height limit
+	beq GAME_LEFT
+	inc grid_y				; Otherwise we can still go down, do so
+	
 	lda #$00
 	sta selector_move_x
 	lda #$02
