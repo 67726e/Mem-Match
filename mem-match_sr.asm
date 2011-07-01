@@ -204,7 +204,7 @@ MOVE_SELECTOR:
 
 ;----- Random Number Generator -----;
 RAND_ROL_INIT:
-	lda #$40 ;#%01000000
+	lda #$20 ;#%00100000
 	sta mask
 	lda #$01
 	sta rand_gen_l

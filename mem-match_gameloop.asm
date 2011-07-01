@@ -19,7 +19,111 @@ GAME_LOOP:
 	mov load_length, #$20
 	ld_point sprite_read, GAME_SPRITE_TABLE
 	jsr LOAD_SPRITES
+	
 
+	ldx grid_height
+grid_mul_loop:			;calculate grid size
+	beq grid_mul_done
+	clc
+	lda grid_h_temp
+	adc #8
+	sta grid_h_temp
+	dex
+	jmp grid_mul_loop
+grid_mul_done:
+
+	lda #$03		;set selector position
+	sta DMA
+	lda #$04
+	sta DMA + 3
+	jsr MOVE_SELECTOR
+
+	ldx grid_h_temp ;number of cards to load
+	
+CARD_LOADER:
+	lda #$01
+	sta $4016
+	lda #$00
+	sta $4016
+	lda $4016
+	lda $4016
+	lda $4016
+	lda $4016
+	and #$01
+	beq CARD_LOADER0	;for a little more variance-
+	jsr RAND_ROL0		;shift when start is held
+CARD_LOADER0:	
+	lda #low($2021)		;load pointer
+	sta name_table
+	lda #high($2021)
+	sta name_table + 1
+	
+	jsr RAND_ROL0
+	lda rand_gen_h		;combine low and high values
+	asl A
+	eor rand_gen_l
+	lsr A
+CARD_LOADER1:
+	cmp grid_h_temp		;make sure our number is a valid-
+	bcc CARD_LOADER2	;card position
+	sec
+	sbc grid_h_temp		;if too large subtract max
+	jmp CARD_LOADER1
+CARD_LOADER2:
+	tay					;make sure the position is free
+	lda card_table,y
+	cmp #0
+	bne CARD_LOADER0
+	tya
+	
+	pha					;push our card#
+	
+	sta temp			;swap x and a
+	txa
+	ldx temp
+	sta card_table, x
+	tax
+	lda temp
+
+	lsr	A				;div 8 for row#
+	lsr A
+	lsr A
+	tay
+CARD_LOADER3:
+	beq CARD_LOADER4	;setup screen position
+	clc
+	lda name_table
+	adc #$60			;row
+	sta name_table
+	lda name_table + 1
+	adc #$00
+	sta name_table + 1
+	dey
+	jmp CARD_LOADER3
+CARD_LOADER4:
+	
+	pla					;pop our card#
+	
+	asl A 				;multiply by 4
+	asl A
+	;vals are smaller than 64, so asl clears carry
+	adc name_table
+	sta name_table
+	lda #$00
+	adc name_table + 1	;store carry
+	sta name_table + 1
+	
+	txa 				;push x so load card doesn't overwrite
+	pha
+	jsr LOAD_CARD
+	pla
+	tax
+	dex
+	beq CARD_LOADER_DONE
+	jmp CARD_LOADER
+CARD_LOADER_DONE:
+;-------------------------------------------------------
+	
 	lda #$00
 	sta $2005				; Set X coordinate to 0
 	sta $2005				; Set Y coordinate to 0

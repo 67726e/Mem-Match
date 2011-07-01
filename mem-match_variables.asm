@@ -38,6 +38,7 @@ rand_gen_h		.rs 1
 
 grid_height		.rs 1			; Number of rows of cards based on difficulty
 grid_y			.rs 1			; Number of current row that the selector is on
+grid_h_temp		.rs 1
 
 ;should functions have a file?
 SPRITE .func DMA +((\1) *4)		; Take a sprite number, returns address
