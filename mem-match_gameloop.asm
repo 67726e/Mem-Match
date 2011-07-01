@@ -13,7 +13,7 @@ GAME_LOOP:
 	lda #$01
 	sta grid_y				; Set off the grid y position at 1
 	
-	lda #$05
+	lda #$02
 	sta grid_height			; Store the # of rows used for the match
 	
 	mov load_length, #$20
@@ -38,8 +38,14 @@ grid_mul_done:
 	sta DMA + 3
 	jsr MOVE_SELECTOR
 
-	ldx grid_h_temp ;number of cards to load
+	ldx #55 ;max table size
+	lda #$FF
+clear_grid:
+	sta card_table-1,x
+	dex
+	bne clear_grid
 	
+	ldx grid_h_temp ;number of cards to load
 CARD_LOADER:
 	lda #$01
 	sta $4016
@@ -72,7 +78,8 @@ CARD_LOADER1:
 CARD_LOADER2:
 	tay					;make sure the position is free
 	lda card_table,y
-	cmp #0
+	cmp #$FF
+	;cmp #0
 	bne CARD_LOADER0
 	tya
 	
@@ -81,7 +88,10 @@ CARD_LOADER2:
 	sta temp			;swap x and a
 	txa
 	ldx temp
+	pha
+	lsr A
 	sta card_table, x
+	pla
 	tax
 	lda temp
 
