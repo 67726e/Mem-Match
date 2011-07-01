@@ -89,6 +89,8 @@ CARD_LOADER2:
 	txa
 	ldx temp
 	pha
+	sec
+	sbc #1
 	lsr A
 	sta card_table, x
 	pla
@@ -172,6 +174,7 @@ GAME_A:
 	adc temp
 	tax
 	lda card_table, x	;grab the number from the table
+	cmp #FF
 	beq GAME_B
 	clc
 	adc #$10
