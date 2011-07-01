@@ -174,7 +174,7 @@ GAME_A:
 	adc temp
 	tax
 	lda card_table, x	;grab the number from the table
-	cmp #FF
+	cmp #$FF
 	beq GAME_B
 	clc
 	adc #$10
